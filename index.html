@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="LeituraFlow">
+    <title>📖 LeituraFlow</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📖 LeituraFlow</h1>
+                <p class="subtitle">Leia mais, conquiste mais</p>
+            </div>
+            <button class="settings-btn" onclick="openSettings()">⚙️</button>
+        </header>
+
+        <!-- NAVEGAÇÃO -->
+        <nav class="nav-tabs">
+            <button class="nav-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="nav-btn" onclick="switchTab('add-reading')">+ Registrar</button>
+            <button class="nav-btn" onclick="switchTab('books')">📚 Livros</button>
+            <button class="nav-btn" onclick="switchTab('achievements')">🏆 Conquistas</button>
+        </nav>
+
+        <!-- CONTEÚDO -->
+        <main class="main-content">
+            <!-- TAB: DASHBOARD -->
+            <div id="dashboard" class="tab-content active">
+                <section class="stats-grid">
+                    <!-- STREAK -->
+                    <div class="stat-card streak">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-info">
+                            <h3>Sequência</h3>
+                            <p class="stat-value" id="streak-value">0</p>
+                            <p class="stat-label">dias lendo</p>
+                        </div>
+                    </div>
+
+                    <!-- PÁGINAS HOJE -->
+                    <div class="stat-card">
+                        <div class="stat-icon">📄</div>
+                        <div class="stat-info">
+                            <h3>Hoje</h3>
+                            <p class="stat-value" id="today-pages">0</p>
+                            <p class="stat-label">páginas</p>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL LIDO -->
+                    <div class="stat-card">
+                        <div class="stat-icon">📖</div>
+                        <div class="stat-info">
+                            <h3>Total</h3>
+                            <p class="stat-value" id="total-pages">0</p>
+                            <p class="stat-label">páginas</p>
+                        </div>
+                    </div>
+
+                    <!-- LIVROS LIDOS -->
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3>Completos</h3>
+                            <p class="stat-value" id="completed-books">0</p>
+                            <p class="stat-label">livros</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- META DIÁRIA -->
+                <section class="goal-section">
+                    <h2>🎯 Meta de Hoje</h2>
+                    <div class="goal-card">
+                        <div class="goal-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <p class="progress-text"><span id="goal-current">0</span>/<span id="goal-target">20</span> páginas</p>
+                        </div>
+                        <button class="btn-primary" onclick="openAddReading()">Registrar Leitura</button>
+                    </div>
+                </section>
+
+                <!-- HISTÓRICO RECENTE -->
+                <section class="history-section">
+                    <h2>📝 Histórico Recente</h2>
+                    <div id="history-list" class="history-list">
+                        <p class="empty-state">Nenhuma leitura registrada hoje</p>
+                    </div>
+                </section>
+
+                <!-- GRÁFICO SEMANAL -->
+                <section class="weekly-section">
+                    <h2>📊 Última Semana</h2>
+                    <div class="weekly-chart">
+                        <div class="chart-bar">
+                            <div class="bar" id="bar-0"></div>
+                            <p>Dom</p>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="bar" id="bar-1"></div>
+                            <p>Seg</p>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="bar" id="bar-2"></div>
+                            <p>Ter</p>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="bar" id="bar-3"></div>
+                            <p>Qua</p>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="bar" id="bar-4"></div>
+                            <p>Qui</p>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="bar" id="bar-5"></div>
+                            <p>Sex</p>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="bar" id="bar-6"></div>
+                            <p>Sab</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB: ADICIONAR LEITURA -->
+            <div id="add-reading" class="tab-content">
+                <form class="form" onsubmit="addReading(event)">
+                    <h2>📖 Registrar Leitura</h2>
+                    
+                    <div class="form-group">
+                        <label for="book-select">Livro:</label>
+                        <select id="book-select" required>
+                            <option value="">Selecione um livro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pages-input">Páginas lidas:</label>
+                        <input type="number" id="pages-input" placeholder="10" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time-input">Tempo de leitura (minutos):</label>
+                        <input type="number" id="time-input" placeholder="30" min="1" value="30">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes-input">Notas:</label>
+                        <textarea id="notes-input" placeholder="Como foi a leitura hoje?"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary">✅ Registrar</button>
+                </form>
+            </div>
+
+            <!-- TAB: LIVROS -->
+            <div id="books" class="tab-content">
+                <div class="books-header">
+                    <h2>📚 Meus Livros</h2>
+                    <button class="btn-primary" onclick="openAddBook()">+ Novo Livro</button>
+                </div>
+
+                <!-- FORMULÁRIO ADICIONAR LIVRO -->
+                <form id="add-book-form" class="form" onsubmit="addBook(event)" style="display: none;">
+                    <h3>Adicionar Novo Livro</h3>
+                    
+                    <div class="form-group">
+                        <label for="book-title">Título:</label>
+                        <input type="text" id="book-title" placeholder="Nome do livro" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="book-author">Autor:</label>
+                        <input type="text" id="book-author" placeholder="Nome do autor" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="book-pages">Total de páginas:</label>
+                        <input type="number" id="book-pages" placeholder="300" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="book-current">Páginas atuais:</label>
+                        <input type="number" id="book-current" placeholder="0" min="0" value="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="book-genre">Gênero:</label>
+                        <input type="text" id="book-genre" placeholder="Ficção, Mistério..." required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">➕ Adicionar Livro</button>
+                    <button type="button" class="btn-secondary" onclick="closeAddBook()">Cancelar</button>
+                </form>
+
+                <!-- LISTA DE LIVROS -->
+                <div id="books-list" class="books-list">
+                    <p class="empty-state">Nenhum livro adicionado. Crie um novo!</p>
+                </div>
+            </div>
+
+            <!-- TAB: CONQUISTAS -->
+            <div id="achievements" class="tab-content">
+                <h2>🏆 Minhas Conquistas</h2>
+                <div class="achievements-grid" id="achievements-grid">
+                    <p class="empty-state">Continue lendo para ganhar conquistas!</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL DE SETTINGS -->
+    <div id="settings-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Configurações</h2>
+                <button class="close-btn" onclick="closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="daily-goal">Meta diária (páginas):</label>
+                    <input type="number" id="daily-goal" min="1" value="20">
+                </div>
+                <button class="btn-primary" onclick="saveDailyGoal()">Salvar Meta</button>
+                <hr>
+                <button class="btn-danger" onclick="resetAllData()">🗑️ Limpar Todos os Dados</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
